@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import 'package:practica_final_2/models/models.dart';
 import 'package:practica_final_2/screens/providers/movies_provider.dart';
@@ -10,7 +12,7 @@ class CastingCards extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final moviesProvider = Provider.of<MoviesProvider>(context, listen: false);
-    FutureBuilder(
+    return FutureBuilder(
       future: moviesProvider.getMovieCast(id),
       builder: (BuildContext context, AsyncSnapshot<List<Cast>> snapshot) {
         if (!snapshot.hasData) {
@@ -38,8 +40,9 @@ class CastingCards extends StatelessWidget {
 }
 
 class _CastCard extends StatelessWidget {
-  _CastCard(Cast casting);
-
+  final Cast cast;
+  const _CastCard(this.cast);
+  
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -53,7 +56,7 @@ class _CastCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(20),
             child: FadeInImage(
               placeholder: AssetImage('assets/no-image.jpg'),
-              image: NetworkImage('https://via.placeholder.com/150x300'),
+              image: NetworkImage(cast.fullProfilePath),
               height: 140,
               width: 100,
               fit: BoxFit.cover,
@@ -63,7 +66,7 @@ class _CastCard extends StatelessWidget {
             height: 5,
           ),
           Text(
-            'Nom Actor',
+            cast.name,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
             textAlign: TextAlign.center,

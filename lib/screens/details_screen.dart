@@ -18,7 +18,7 @@ class DetailsScreen extends StatelessWidget {
                 _PosterAndTitile(movie),
                 _Overview(movie),
                 _Overview(movie),
-                CastingCards()
+                CastingCards(movie.id)
               ])
             )
           ],
@@ -83,18 +83,21 @@ class _PosterAndTitile extends StatelessWidget {
             ),
           ),
           SizedBox(width: 20,),
-          Column(
-            children: [
-              Text(movie.title, style: textTheme.headline5, overflow: TextOverflow.ellipsis, maxLines: 2,),
-              Text(movie.originalTitle, style: textTheme.subtitle1, overflow: TextOverflow.ellipsis, maxLines: 2,),
-              Row(
-                children: [
-                  Icon(Icons.star_outline,size: 15, color: Colors.grey),
-                  SizedBox(width: 5,),
-                  Text('${movie.voteAverage}', style: textTheme.caption),
-                ],
-              )
-            ],
+          ConstrainedBox(
+            constraints: BoxConstraints(maxWidth: 200),
+            child: Column(
+              children: [
+                Text(movie.title, style: textTheme.headline5, overflow: TextOverflow.ellipsis, maxLines: 2,),
+                Text(movie.originalTitle, style: textTheme.subtitle1, overflow: TextOverflow.ellipsis, maxLines: 2,),
+                Row(
+                  children: [
+                    Icon(Icons.star_outline,size: 15, color: Colors.grey),
+                    SizedBox(width: 5,),
+                    Text('${movie.voteAverage}', style: textTheme.caption),
+                  ],
+                )
+              ],
+            ),
           )
         ],
       ),
