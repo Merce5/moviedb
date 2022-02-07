@@ -3,10 +3,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:practica_final_2/models/models.dart';
 import 'package:practica_final_2/screens/providers/movies_provider.dart';
+import 'package:provider/provider.dart';
 
 class MovieSlider extends StatefulWidget {
   final List<Movie> movies;
-  MovieSlider({Key? key, required this.movies}) : super(key: key);
+  final int type;
+  MovieSlider({Key? key, required this.movies, required this.type}) : super(key: key);
 
   @override
   State<MovieSlider> createState() => _MovieSliderState();
@@ -14,7 +16,6 @@ class MovieSlider extends StatefulWidget {
 
 class _MovieSliderState extends State<MovieSlider> {
   ScrollController _scrollController = new ScrollController();
-  bool _estaCarregant = false;
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -36,7 +37,7 @@ class _MovieSliderState extends State<MovieSlider> {
         children: [
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 20),
-            child: Text('Populars',
+            child: Text(widget.type == 0 ? 'Populars' : widget.type == 1 ? 'Peliculas mejor valoradas' : 'Otros',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
           ),
           SizedBox(
@@ -44,9 +45,10 @@ class _MovieSliderState extends State<MovieSlider> {
           ),
           Expanded(
             child: ListView.builder(
+              physics: BouncingScrollPhysics(),
                 controller: _scrollController,
                 scrollDirection: Axis.horizontal,
-                itemCount: 20,
+                itemCount: widget.movies.length,
                 itemBuilder: (_, int index) => _MoviePoster(
                       movie: widget.movies[index],
                     )),
@@ -74,22 +76,34 @@ class _MovieSliderState extends State<MovieSlider> {
   }
 
   Future<Timer> fetchData() async {
-    _estaCarregant = true;
     setState(() {});
     final duration = new Duration(seconds: 2);
     return Timer(duration, peticioHTTP);
   }
 
   void peticioHTTP() {
-    _estaCarregant = false;
     _carregaNou();
     _scrollController.animateTo(_scrollController.position.pixels + 100,
         duration: Duration(milliseconds: 250), curve: Curves.fastOutSlowIn);
   }
 
   void _carregaNou() {
-    MoviesProvider.refresh("2");
-    setState(() {});
+    final moviesProvider = Provider.of<MoviesProvider>(context, listen: false);
+    switch(widget.type) {
+      case 0: {
+        moviesProvider.getPopularMovies();
+        break;
+      }
+      case 1: {
+        moviesProvider.getRatedMovies();
+        break;
+      }
+      case 2: {
+        moviesProvider.getUpcomingMovies();
+        break;
+      }
+    }
+    
   }
 }
 
@@ -102,7 +116,6 @@ class _MoviePoster extends StatelessWidget {
     return Container(
       width: 130,
       height: 190,
-      // color: Colors.green,
       margin: EdgeInsets.symmetric(horizontal: 10),
       child: Column(
         children: [

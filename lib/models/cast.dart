@@ -21,7 +21,7 @@ class Cast {
     bool adult;
     int gender;
     int id;
-    String knownForDepartment;
+    String? knownForDepartment;
     String name;
     String originalName;
     double popularity;

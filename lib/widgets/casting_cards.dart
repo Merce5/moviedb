@@ -27,11 +27,10 @@ class CastingCards extends StatelessWidget {
             margin: EdgeInsets.only(bottom: 30),
             width: double.infinity,
             height: 180,
-            // color: Colors.red,
             child: ListView.builder(
-                itemCount: 10,
+                itemCount: casting!.length,
                 scrollDirection: Axis.horizontal,
-                itemBuilder: (BuildContext context, int index) => _CastCard(casting![index])),
+                itemBuilder: (BuildContext context, int index) =>  _CastCard(casting[index])),
           );
         }
       },

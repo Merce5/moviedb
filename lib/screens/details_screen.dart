@@ -5,26 +5,33 @@ import 'package:practica_final_2/models/models.dart';
 import 'package:practica_final_2/widgets/widgets.dart';
 
 class DetailsScreen extends StatelessWidget {
+  Movie? movieS;
+  bool searching = false;
+  DetailsScreen.search(this.movieS, this.searching);
+  DetailsScreen();
 
   @override
   Widget build(BuildContext context) {
-    final Movie movie = ModalRoute.of(context)?.settings.arguments as Movie;
+    final Movie movie;
+    if (!searching) {
+      movie = ModalRoute.of(context)?.settings.arguments as Movie;
+    } else {
+      movie = movieS!;
+    }
 
     return Scaffold(
         body: CustomScrollView(
-          slivers: [
-            _CustomAppBar(movie),
-            SliverList(
-              delegate: SliverChildListDelegate([
-                _PosterAndTitile(movie),
-                _Overview(movie),
-                _Overview(movie),
-                CastingCards(movie.id)
-              ])
-            )
-          ],
-        )
-    );
+      slivers: [
+        _CustomAppBar(movie),
+        SliverList(
+            delegate: SliverChildListDelegate([
+          _PosterAndTitile(movie),
+          _Overview(movie),
+          _Overview(movie),
+          CastingCards(movie.id)
+        ]))
+      ],
+    ));
   }
 }
 
@@ -47,12 +54,11 @@ class _CustomAppBar extends StatelessWidget {
           alignment: Alignment.bottomCenter,
           color: Colors.black12,
           padding: EdgeInsets.only(bottom: 10),
-          child: Text(movie.title,
-            style: TextStyle(fontSize: 16)
-            ,
+          child: Text(
+            movie.title,
+            style: TextStyle(fontSize: 16),
           ),
         ),
-
         background: FadeInImage(
           placeholder: AssetImage('assets/loading.gif'),
           image: NetworkImage(movie.getfullPosterPath()),
@@ -80,20 +86,35 @@ class _PosterAndTitile extends StatelessWidget {
             child: FadeInImage(
               placeholder: AssetImage('assets/loading.gif'),
               image: NetworkImage(movie.getfullPosterPath()),
+              width: 100,
               height: 150,
             ),
           ),
-          SizedBox(width: 20,),
+          SizedBox(
+            width: 20,
+          ),
           ConstrainedBox(
             constraints: BoxConstraints(maxWidth: 200),
             child: Column(
               children: [
-                Text(movie.title, style: textTheme.headline5, overflow: TextOverflow.ellipsis, maxLines: 2,),
-                Text(movie.originalTitle, style: textTheme.subtitle1, overflow: TextOverflow.ellipsis, maxLines: 2,),
+                Text(
+                  movie.title,
+                  style: textTheme.headline5,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 2,
+                ),
+                Text(
+                  movie.originalTitle,
+                  style: textTheme.subtitle1,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 2,
+                ),
                 Row(
                   children: [
-                    Icon(Icons.star_outline,size: 15, color: Colors.grey),
-                    SizedBox(width: 5,),
+                    Icon(Icons.star_outline, size: 15, color: Colors.grey),
+                    SizedBox(
+                      width: 5,
+                    ),
                     Text('${movie.voteAverage}', style: textTheme.caption),
                   ],
                 )
@@ -114,7 +135,8 @@ class _Overview extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      child: Text(movie.overview,
+      child: Text(
+        movie.overview,
         textAlign: TextAlign.justify,
         style: Theme.of(context).textTheme.subtitle1,
       ),
