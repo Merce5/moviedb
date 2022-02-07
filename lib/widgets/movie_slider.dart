@@ -1,13 +1,24 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:practica_final_2/models/models.dart';
+import 'package:practica_final_2/screens/providers/movies_provider.dart';
 
-class MovieSlider extends StatelessWidget {
+class MovieSlider extends StatefulWidget {
   final List<Movie> movies;
-  const MovieSlider({Key? key, required this.movies}) : super(key: key);
+  MovieSlider({Key? key, required this.movies}) : super(key: key);
+
+  @override
+  State<MovieSlider> createState() => _MovieSliderState();
+}
+
+class _MovieSliderState extends State<MovieSlider> {
+  ScrollController _scrollController = new ScrollController();
+  bool _estaCarregant = false;
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    if (this.movies.length == 0) {
+    if (widget.movies.length == 0) {
       return Container(
         width: double.infinity,
         height: size.height * 0.5,
@@ -20,7 +31,6 @@ class MovieSlider extends StatelessWidget {
     return Container(
       width: double.infinity,
       height: 260,
-      // color: Colors.red,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -34,13 +44,52 @@ class MovieSlider extends StatelessWidget {
           ),
           Expanded(
             child: ListView.builder(
+                controller: _scrollController,
                 scrollDirection: Axis.horizontal,
                 itemCount: 20,
-                itemBuilder: (_, int index) => _MoviePoster(movie: movies[index],)),
+                itemBuilder: (_, int index) => _MoviePoster(
+                      movie: widget.movies[index],
+                    )),
           )
         ],
       ),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(() {
+      print(_scrollController.position.pixels);
+      if (_scrollController.position.atEdge) {
+        if (_scrollController.position.pixels == 0) {
+          print('Scroll a l\'inici');
+        } else {
+          print('Scroll al final');
+          //_carregaNou();
+          fetchData();
+        }
+      }
+    });
+  }
+
+  Future<Timer> fetchData() async {
+    _estaCarregant = true;
+    setState(() {});
+    final duration = new Duration(seconds: 2);
+    return Timer(duration, peticioHTTP);
+  }
+
+  void peticioHTTP() {
+    _estaCarregant = false;
+    _carregaNou();
+    _scrollController.animateTo(_scrollController.position.pixels + 100,
+        duration: Duration(milliseconds: 250), curve: Curves.fastOutSlowIn);
+  }
+
+  void _carregaNou() {
+    MoviesProvider.refresh("2");
+    setState(() {});
   }
 }
 
@@ -58,8 +107,8 @@ class _MoviePoster extends StatelessWidget {
       child: Column(
         children: [
           GestureDetector(
-            onTap: () => Navigator.pushNamed(context, 'details',
-                arguments: movie),
+            onTap: () =>
+                Navigator.pushNamed(context, 'details', arguments: movie),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
               child: FadeInImage(
