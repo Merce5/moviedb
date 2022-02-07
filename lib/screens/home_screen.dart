@@ -52,7 +52,7 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
               Container(
-                height: 550,
+                height: 450,
               ),
               ListTile(
                 title: Text("Using: The Movie DB", style: style),

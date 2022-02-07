@@ -37,7 +37,7 @@ class _MovieSliderState extends State<MovieSlider> {
         children: [
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 20),
-            child: Text(widget.type == 0 ? 'Populars' : widget.type == 1 ? 'Peliculas mejor valoradas' : 'Otros',
+            child: Text(widget.type == 0 ? 'Populars' : widget.type == 1 ? 'Peliculas mejor valoradas' : 'Próximamente',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
           ),
           SizedBox(
@@ -115,7 +115,7 @@ class _MoviePoster extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: 130,
-      height: 190,
+      height: 250,
       margin: EdgeInsets.symmetric(horizontal: 10),
       child: Column(
         children: [
@@ -128,11 +128,11 @@ class _MoviePoster extends StatelessWidget {
                 placeholder: AssetImage('assets/no-image.jpg'),
                 image: NetworkImage(movie.getfullPosterPath()),
                 width: 130,
-                height: 190,
+                height: 150,
                 fit: BoxFit.cover,
               ),
             ),
-          ),
+          ), 
           SizedBox(
             height: 5,
           ),
